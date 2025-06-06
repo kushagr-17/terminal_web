@@ -1,0 +1,66 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html, body {
+  height: 100%;
+  width: 100%;
+  background-color: #1e1e1e;
+  font-family: 'Courier New', monospace;
+  color: #ffffff;
+}
+
+#terminal {
+  height: calc(100% - 40px);
+  width: calc(100% - 40px);
+  margin: 20px;
+  padding: 20px;
+  border: 2px solid #4caf50;
+  border-radius: 10px;
+  box-shadow: inset 0 0 20px rgba(0, 255, 0, 0.1);
+  background-color: #211d1b;
+  overflow-y: auto;
+  white-space: pre-wrap;
+}
+
+.prompt-line {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.prompt {
+  margin-right: 8px;
+  white-space: nowrap;
+}
+
+input {
+  background: none;
+  border: none;
+  color: #ffffff;
+  font-family: monospace;
+  font-size: 16px;
+  outline: none;
+  flex: 1;
+}
+
+.output {
+  white-space: pre-wrap;
+  margin: 4px 0 0 20px;
+}
+
+a {
+  color: #9C8394;
+  text-decoration: none;
+}
+
+a:hover {
+  background: #73ABAD;
+  color: #211830;
+}
+
+a:focus {
+  outline: 0;
+}
