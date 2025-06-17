@@ -60,9 +60,8 @@ const commands = {
   terminal.appendChild(wrapper);
 
   const pre = wrapper.querySelector("pre");
-  pre.style.color = "#8be9fd";
   pre.style.fontFamily = "monospace";
-  pre.style.fontSize = "12px";
+  pre.style.fontSize = "0.9rem";
   pre.style.whiteSpace = "pre";
   pre.style.overflowX = "auto";
   pre.style.margin = "0";
@@ -229,7 +228,7 @@ function printBanner(callback) {
   const bannerPre = bannerWrapper.querySelector("pre");
   bannerPre.style.color = "#DCDCCC";
   bannerPre.style.fontFamily = "monospace";
-  bannerPre.style.fontSize = "12px";
+  bannerPre.style.fontSize = "1rem";
   bannerPre.style.whiteSpace = "pre";
   bannerPre.style.overflowX = "auto";
   bannerPre.style.margin = "0";
