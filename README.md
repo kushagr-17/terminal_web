@@ -2,5 +2,3 @@
 
 Work in progress
 
-### Smol Glimpse 
-![Preview](terminal.png) 
