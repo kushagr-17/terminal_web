@@ -23,13 +23,8 @@ const commands = {
   ],
 
   resume: () => {
-    const link = document.createElement("a");
-    link.href = "resume.pdf";
-    link.download = "Kushagr_Sharma_Resume.pdf";
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    return "Downloading resume...";
+    window.open("https://drive.google.com/file/d/198Bd-ewLUH_z1ynneyob3-EwcuaKxtYt/view?usp=drive_link", "_blank");
+    return "Opening resume...";
   },
 
   clear: () => {
