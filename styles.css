@@ -84,7 +84,7 @@ a:focus {
 
 .banner-art, .neofetch-wrapper pre {
   font-family: 'Courier New', monospace;
-  font-size: 12px;
+  font-size: 1rem;
   white-space: pre;
   overflow-x: auto;
   line-height: 1.2;
@@ -93,7 +93,7 @@ a:focus {
 
 @media (max-width: 600px) {
   .banner-art, .neofetch-wrapper pre {
-    font-size: 10px;
+    font-size: 0.9rem;
     line-height: 1.1;
   }
 }
