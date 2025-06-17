@@ -54,18 +54,24 @@ const commands = {
     `   <span style="color:#8be9fd">@_:?_:+_:_:#%</span>`,
   ];
 
-  const output = document.createElement("div");
-  output.className = "output neofetch-output";
-  terminal.appendChild(output);
+  const wrapper = document.createElement("div");
+  wrapper.className = "output neofetch-wrapper";
+  wrapper.innerHTML = `<pre></pre>`;
+  terminal.appendChild(wrapper);
+
+  const pre = wrapper.querySelector("pre");
+  pre.style.color = "#8be9fd";
+  pre.style.fontFamily = "monospace";
+  pre.style.fontSize = "12px";
+  pre.style.whiteSpace = "pre";
+  pre.style.overflowX = "auto";
+  pre.style.margin = "0";
 
   let lineIndex = 0;
 
   function typeLine() {
-    if (lineIndex >= lines.length) {
-      return;
-    }
-
-    output.innerHTML += lines[lineIndex++] + "<br>";
+    if (lineIndex >= lines.length) return;
+    pre.innerHTML += lines[lineIndex++] + "\n";
     terminal.scrollTop = terminal.scrollHeight;
     setTimeout(typeLine, 30);
   }
@@ -215,35 +221,43 @@ function printBanner(callback) {
     ""
   ];
 
-  const bannerDiv = document.createElement("div");
-  bannerDiv.className = "output";
-  bannerDiv.style.color = "#DCDCCC";
-  terminal.appendChild(bannerDiv);
+  const bannerWrapper = document.createElement("div");
+  bannerWrapper.className = "output banner-art";
+  bannerWrapper.innerHTML = `<pre></pre>`;
+  terminal.appendChild(bannerWrapper);
+
+  const bannerPre = bannerWrapper.querySelector("pre");
+  bannerPre.style.color = "#DCDCCC";
+  bannerPre.style.fontFamily = "monospace";
+  bannerPre.style.fontSize = "12px";
+  bannerPre.style.whiteSpace = "pre";
+  bannerPre.style.overflowX = "auto";
+  bannerPre.style.margin = "0";
 
   let lineIndex = 0;
   let charIndex = 0;
 
   function typeChar() {
     if (lineIndex >= bannerLines.length) {
-      if (callback) callback(); 
+      if (callback) callback();
       return;
     }
 
     const currentLine = bannerLines[lineIndex];
 
     if (currentLine.includes("<span")) {
-      bannerDiv.innerHTML += currentLine + "<br>";
+      bannerPre.innerHTML += currentLine + "\n";
       lineIndex++;
       charIndex = 0;
       setTimeout(typeChar, 400);
       return;
     }
 
-    if (charIndex < currentLine.length) {
-      bannerDiv.innerHTML += currentLine[charIndex++];
+    if(charIndex < currentLine.length){
+      bannerPre.innerHTML += currentLine[charIndex++];
     }
     else{
-      bannerDiv.innerHTML += "<br>";
+      bannerPre.innerHTML += "\n";
       lineIndex++;
       charIndex = 0;
     }
@@ -254,6 +268,7 @@ function printBanner(callback) {
 
   typeChar();
 }
+
 
 
 printBanner(() => {
