@@ -9,6 +9,8 @@ const commands = {
     { type: "desc", cmd: "resume", desc: "Download my resume" },
     { type: "desc", cmd: "banner", desc: "Show the welcome banner" },
     { type: "desc", cmd: "clear", desc: "Clear the terminal screen" },
+    { type: "desc", cmd: "game", desc: "Use your OSINT skills and guess the location :)"},
+    { type: "desc", cmd: "weather", desc: "Check weather for a city"},
     { type: "desc", cmd: "sudo", desc: "I wonder what this does 🤔"}
   ],
 
