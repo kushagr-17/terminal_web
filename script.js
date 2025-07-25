@@ -12,7 +12,41 @@ const commands = {
     { type: "desc", cmd: "sudo", desc: "I wonder what this does 🤔"}
   ],
 
-  whoami: () => "Hi, I'm Kushagr Sharma, an engineer who builds cool projects. I also participate in CTF events.",
+
+  whoami: () => {
+    const lines = [
+      '👋 Hey there! I\'m Kushagr Sharma.',
+      '🧑‍💻 I\'m a computer science engineer who likes building cool tech, playing CTFs and breaking code.',
+      '💡 I enjoy working on projects that blend creativity, system programming and cybersecurity.',
+      '📍 Based in India, always online.',
+      '⌨️ Type <span style="color:#09ff00ff;font-weight:bold;">socials</span> to see where I hang out, or <span style="color:#09ff00ff;font-weight:bold;">resume</span> to learn more about my work.',
+    ];
+
+    const wrapper = document.createElement("div");
+    wrapper.className = "output neofetch-wrapper";
+    wrapper.innerHTML = `<pre></pre>`;
+    terminal.appendChild(wrapper);
+
+    const pre = wrapper.querySelector("pre");
+    pre.style.fontFamily = "monospace";
+    pre.style.fontSize = "1rem";
+    pre.style.whiteSpace = "pre";
+    pre.style.overflowX = "auto";
+    pre.style.margin = "0";
+
+    let lineIndex = 0;
+
+    function typeLine() {
+      if (lineIndex >= lines.length) return;
+      pre.innerHTML += lines[lineIndex++] + "\n";
+      terminal.scrollTop = terminal.scrollHeight;
+      setTimeout(typeLine, 15);
+    }
+
+    typeLine();
+    return commands;
+
+  },
 
   socials: () => [
     { type: "link", name: "GitHub", url: "https://github.com/kushagr-17" },
@@ -20,6 +54,7 @@ const commands = {
     { type: "link", name: "YouTube", url: "https://www.youtube.com/@sgtghost141" },
     { type: "link", name: "Codeforces", url: "https://codeforces.com/profile/blob55" },
     { type: "link", name: "Leetcode", url: "https://leetcode.com/u/kushagr_17/" },
+    { type: "link", name: "Medium Blog", url: "https://medium.com/@kushagr17" },
   ],
 
   resume: () => {
@@ -79,10 +114,61 @@ const commands = {
   return commands;
 },
 
+  game: () => {
+    const msg = document.createElement("div");
+    msg.className = "output";
+    msg.textContent = "Opening in new tab!"
+    terminal.appendChild(msg);
+    terminal.scrollTop = terminal.scrollHeight;
+
+    setTimeout(() => {
+      window.open("https://www.openguessr.com", "_blank");
+    }, 1000);
+
+    return commands;
+},
+
+  weather: async (args) => {
+    const city = args.join('+');
+
+    if(!city){
+      return [
+        { type: "text", value: "Usage: weather [city]. Example: weather Delhi" }
+      ];
+    }
+
+    const weatherHeader = document.createElement("div");
+    weatherHeader.className = "output";
+    weatherHeader.innerHTML = `<span style="color:#73abad;">🌤️ Weather for ${city.replace(/\+/g, ' ')}, loading please wait!</span>`;
+    terminal.appendChild(weatherHeader);
+
+    terminal.scrollTop = terminal.scrollHeight;
+
+    try {
+      const response = await fetch(`https://wttr.in/${city}?ATm`);
+      const text = await response.text();
+
+      const weatherResult = document.createElement("div");
+      weatherResult.className = "output";
+      weatherResult.innerHTML = `<pre style="color:#ffffff;">${text}</pre>`;
+      terminal.appendChild(weatherResult);
+
+      terminal.scrollTop = terminal.scrollHeight;
+    } catch (error) {
+      const failMsg = document.createElement("div");
+      failMsg.className = "output";
+      failMsg.style.color = "red";
+      failMsg.textContent = "Failed to fetch weather data. Try again later.";
+      terminal.appendChild(failMsg);
+    }
+
+    return commands;
+},
+
   sudo: () => {
     const msg = document.createElement("div");
     msg.className = "output";
-    msg.textContent = "... really?";
+    msg.textContent = "OH NO...anyway";
     terminal.appendChild(msg);
     terminal.scrollTop = terminal.scrollHeight;
 
@@ -109,7 +195,7 @@ function addPrompt(){
   const prompt = document.createElement("span");
   prompt.className = "prompt";
   prompt.textContent = "user@n0t-r00t:~$";
-  prompt.style.color = "rgb(9, 255, 0)"
+  prompt.style.color = "#09ff00ff"
   prompt.style.fontWeight = 'bold';
 
   const input = document.createElement("input");
@@ -121,35 +207,55 @@ function addPrompt(){
 
   input.focus();
 
-  input.addEventListener("keydown", function (e){
-    if(e.key === "Enter"){
-      const command = input.value.trim();
-      if (command !== "") {
-        history.push(command);
+  input.addEventListener("keydown", async function (e){
+    if (e.key === "Enter") {
+      const commandInput = input.value.trim();
+
+      if (commandInput !== "") {
+        history.push(commandInput);
         historyIndex = history.length;
       }
 
       input.disabled = true;
 
       const commandText = document.createElement("span");
-      commandText.textContent = input.value;
+      commandText.textContent = commandInput;
       commandText.style.color = "#ffffff";
       promptLine.replaceChild(commandText, input);
 
-      if(command === ""){
+      if (commandInput === "") {
         addPrompt();
         terminal.scrollTop = terminal.scrollHeight;
         return;
       }
 
-      if(command === "clear"){
+      if(commandInput === "clear"){
         commands.clear();
         return;
       }
 
-      const result = commands[command]?.() ?? { type: "error", message: `${command} : Command not found` };
+      const [cmdName, ...args] = commandInput.split(" ");
+      const fn = commands[cmdName];
 
-      if(Array.isArray(result)){
+      let result;
+
+      try {
+        if (typeof fn === "function") {
+          result = await fn(args);
+        } else {
+          result = {
+            type: "error",
+            message: `${cmdName}: command not found`
+          };
+        }
+      } catch (err) {
+        result = {
+          type: "error",
+          message: `Command failed: ${err.message}`
+        };
+      }
+
+      if (Array.isArray(result)) {
         result.forEach(entry => {
           const line = document.createElement("div");
           line.className = "output";
@@ -159,19 +265,17 @@ function addPrompt(){
           } else if (entry.type === "link") {
             line.innerHTML = `<a href="${entry.url}" target="_blank" text-decoration: none;">${entry.name}</a>`;
           } else if (entry.type === "text") {
-            line.innerHTML = `<pre style="color: #bbbbbb;">${entry.value}</pre>`;
+            line.innerHTML = `<pre style="color: #ffffff;">${entry.value}</pre>`;
           }
 
           terminal.appendChild(line);
         });
-      }
-      else if(typeof result === "string"){
+      } else if (typeof result === "string") {
         const output = document.createElement("div");
         output.className = "output";
         output.textContent = result;
         terminal.appendChild(output);
-      }
-      else if(result?.type === "error"){
+      } else if (result?.type === "error") {
         const errorOutput = document.createElement("div");
         errorOutput.className = "output";
         errorOutput.style.color = "red";
@@ -187,18 +291,17 @@ function addPrompt(){
       addPrompt();
     }
 
-    if(e.key === "ArrowUp"){
-      if(historyIndex > 0){
+    // Command history support
+    if (e.key === "ArrowUp") {
+      if (historyIndex > 0) {
         historyIndex--;
         input.value = history[historyIndex];
       }
-    }
-    else if(e.key === "ArrowDown"){
-      if(historyIndex < history.length - 1){
+    } else if (e.key === "ArrowDown") {
+      if (historyIndex < history.length - 1) {
         historyIndex++;
         input.value = history[historyIndex];
-      }
-      else{
+      } else {
         input.value = "";
         historyIndex = history.length;
       }
@@ -267,8 +370,6 @@ function printBanner(callback) {
 
   typeChar();
 }
-
-
 
 printBanner(() => {
   addPrompt();
